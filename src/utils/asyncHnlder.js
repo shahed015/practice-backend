@@ -1,7 +1,7 @@
 //////////////////////////////////////
 // Higher-Order Function
 export const asyncHndler = (requestHndler) => {
-  (req, res, next) => {
+  return (req, res, next) => {
     Promise.resolve(requestHndler(req, res, next)).catch((err) => next(err));
   };
 };
