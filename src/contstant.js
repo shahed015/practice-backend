@@ -1,1 +1,1 @@
-export const DB_NANE = "practice-backend";
+export const DB_NAME = "practice-backend";
