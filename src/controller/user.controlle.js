@@ -1,14 +1,13 @@
 import { asyncHndler } from "../utils/asyncHnlder.js";
 import ApiError from "../utils/apiError.js";
-import User from "../models/user.model.js";
-import uploadOnCloudinary from "../utils/cloudinary.js";
+import { User } from "../models/user.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 
 export const registerUser = asyncHndler(async (req, res) => {
   // get user details from frontend
   const { fullname, email, password, username } = req.body;
   console.log("email:", email);
-  console.log("pass:", password);
 
   // validation - not empty
   if (
@@ -23,12 +22,13 @@ export const registerUser = asyncHndler(async (req, res) => {
   });
 
   if (existedUser) {
-    ApiError(409, "User with email or username already exists");
+    throw new ApiError(409, "User with email or username already exists");
   }
 
   // check for images, check for avatar
-  const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImgLocalPath = req.files?.coverImg[0]?.path;
+  const avatarLocalPath = req.files?.avatar?.[0]?.path;
+  const coverImageLocalPath = req.files?.coverImg?.[0]?.path;
+  console.log("Avatar Path:", avatarLocalPath);
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is required");
@@ -36,16 +36,21 @@ export const registerUser = asyncHndler(async (req, res) => {
 
   // upload them to cloudinary, avatar
   const avatar = await uploadOnCloudinary(avatarLocalPath);
+  let coverImage = null;
 
   if (!avatar) {
     throw new ApiError(400, "Avatar upload failed");
   }
 
+  if (coverImageLocalPath) {
+    coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  }
+
   // create user object - create entry in db
   const user = await User.create({
-    fullname,
-    avatar: avatar.url,
-    coverImg: coverImg?.url || "",
+    fullName: fullname,
+    avatar: avatar.secure_url,
+    coverImage: coverImage?.secure_url || "",
     email,
     password,
     username,
