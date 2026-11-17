@@ -6,12 +6,12 @@ import { ApiResponse } from "../utils/apiResponse.js";
 
 export const registerUser = asyncHndler(async (req, res) => {
   // get user details from frontend
-  const { fullname, email, password, username } = req.body;
+  const { fullName, email, password, username } = req.body;
   console.log("email:", email);
 
   // validation - not empty
   if (
-    [fullname, email, password, username].some((field) => field?.trim() === "")
+    [fullName, email, password, username].some((field) => field?.trim() === "")
   ) {
     throw new ApiError(400, "All fields are required");
   }
@@ -48,7 +48,7 @@ export const registerUser = asyncHndler(async (req, res) => {
 
   // create user object - create entry in db
   const user = await User.create({
-    fullName: fullname,
+    fullName: fullName,
     avatar: avatar.secure_url,
     coverImage: coverImage?.secure_url || "",
     email,
