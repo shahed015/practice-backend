@@ -7,7 +7,8 @@ import { ApiResponse } from "../utils/apiResponse.js";
 export const registerUser = asyncHndler(async (req, res) => {
   // get user details from frontend
   const { fullName, email, password, username } = req.body;
-  console.log("email:", email);
+  // console.log("email:", email);
+  // console.log(req.body);
 
   // validation - not empty
   if (
@@ -28,7 +29,8 @@ export const registerUser = asyncHndler(async (req, res) => {
   // check for images, check for avatar
   const avatarLocalPath = req.files?.avatar?.[0]?.path;
   const coverImageLocalPath = req.files?.coverImg?.[0]?.path;
-  console.log("Avatar Path:", avatarLocalPath);
+  // console.log("Avatar Path:", avatarLocalPath);
+  // console.log(req.files);
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is required");
